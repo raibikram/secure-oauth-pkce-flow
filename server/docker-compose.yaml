@@ -1,0 +1,14 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: oauth-mongo-db
+    ports:
+      - "9000:27017"   # host port 9000 -> container port 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
