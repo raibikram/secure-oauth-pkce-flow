@@ -21,7 +21,7 @@
     "pkce",
     "openid-connect"
   ],
-  "author": "Bikram Rai <bikramrai@example.com>",
+  "author": "Bikram Rai <bikramraidev@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.23.0",
   "devDependencies": {
