@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export default function LoginPage() {
     return (
-        <div className="flex flex-col items-center mt-10">
-            <h2 className="text-2xl font-semibold">Login</h2>
+        <div className="flex flex-col items-center mt-10 ">
+            <h2 className="text-2xl font-semibold text-gray-900">Login</h2>
             <Link
                 href={`${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/google`}
                 className="flex items-center gap-2 px-5 py-2.5 border border-gray-300 rounded bg-white cursor-pointer mt-5 text-base hover:bg-gray-50 transition"
