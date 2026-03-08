@@ -1,7 +1,8 @@
 {
-  "name": "client",
+  "name": "google-oauth-frontend",
   "version": "0.1.0",
   "private": true,
+  "description": "Next.js frontend for Google OAuth 2.0 authentication demo with Tailwind CSS.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -24,4 +25,15 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   }
+  ,
+  "keywords": [
+    "nextjs",
+    "react",
+    "oauth",
+    "google-oauth",
+    "frontend",
+    "authentication",
+    "tailwindcss"
+  ],
+  "author": "Bikram Rai <bikramrai@example.com>"
 }

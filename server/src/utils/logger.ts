@@ -1,4 +1,6 @@
+
 import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 import { env } from "../configs/env";
 
 const { combine, timestamp, printf, colorize, errors } = winston.format;
@@ -15,10 +17,24 @@ export const logger = winston.createLogger({
         env.nodeEnv === "development" ? colorize() : winston.format.uncolorize(),
         logFormat
     ),
-    transports: [
-        new winston.transports.Console()
-        // In production, you might also add File transports or external services like Datadog:
-        // new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        // new winston.transports.File({ filename: 'logs/combined.log' })
-    ],
+    transports:
+        env.nodeEnv === "development"
+            ? [
+                  new winston.transports.Console()
+              ]
+            : [
+                  new DailyRotateFile({
+                      filename: "logs/error-%DATE%.log",
+                      datePattern: "YYYY-MM-DD",
+                      level: "error",
+                      maxFiles: "14d",
+                      zippedArchive: true,
+                  }),
+                  new DailyRotateFile({
+                      filename: "logs/combined-%DATE%.log",
+                      datePattern: "YYYY-MM-DD",
+                      maxFiles: "14d",
+                      zippedArchive: true,
+                  })
+              ],
 });
