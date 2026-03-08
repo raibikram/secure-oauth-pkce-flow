@@ -30,6 +30,15 @@ const UserSchema = new Schema<IUser>(
             enum: ["USER", "ADMIN"],
             default: "USER",
         },
+        provider: {
+            type: String,
+            enum: ["local", "google", "github", "facebook"],
+            default: "local",
+        },
+        providerId: {
+            type: String,
+            required: false,
+        },
     },
     { timestamps: true }
 );

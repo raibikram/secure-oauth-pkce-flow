@@ -1,51 +1,56 @@
 import User from "../models/user/user.model";
-import Auth from "../models/auth/auth.model";
 import { IGoogleUserInfo } from "../types";
 
 export class AuthService {
     /**
      * Finds an existing user by Google provider ID, or creates a new user
-     * and associated Auth record if one doesn't exist.
-     * Uses upsert semantics to avoid race conditions.
+     * if one doesn't exist.
      */
     static async findOrCreateUserFromGoogle(profile: IGoogleUserInfo) {
-        // 1. Check if we already have an Auth record for this Google account
-        const existingAuth = await Auth.findOne({
+        // 1. Check if user exists by providerId for google
+        let user = await User.findOne({
             provider: "google",
             providerId: profile.sub,
-        });
+        }).lean();
 
-        if (existingAuth) {
-            // User exists — return populated user doc
-            const user = await User.findById(existingAuth.userId).lean();
-            if (!user) {
-                throw new Error("Auth record found but user document is missing");
-            }
+        if (user) {
             return user;
         }
 
-        // 2. No OAuth record — check if there's a user with this email (e.g. email/password account)
-        let user = await User.findOne({ email: profile.email }).lean();
+        // 2. Fallback: check if there's a user with this email (if they signed up via email before)
+        user = await User.findOne({ email: profile.email }).lean();
 
-        if (!user) {
-            // 3. Brand-new user — create user document
-            const newUser = new User({
-                name: profile.name,
-                email: profile.email,
-                avatar: profile.picture,
-                role: "USER",
-                // password intentionally omitted for OAuth users
-            });
-            user = (await newUser.save()).toObject();
+        if (user) {
+            // Update existing email/password user to include Google auth linking
+            const updatedUser = await User.findByIdAndUpdate(
+                user._id,
+                {
+                    provider: "google",
+                    providerId: profile.sub,
+                    avatar: user.avatar || profile.picture // Only update avatar if none exists
+                },
+                { new: true }
+            ).lean();
+
+            if (!updatedUser) {
+                throw new Error("Failed to link Google account to existing user");
+            }
+
+            return updatedUser;
         }
 
-        // 4. Create Auth record linking this Google account to the user
-        await Auth.create({
+        // 3. Brand-new user — create user document
+        const newUser = new User({
+            name: profile.name,
+            email: profile.email,
+            avatar: profile.picture,
+            role: "USER",
             provider: "google",
-            providerId: profile.sub,
-            userId: user._id,
+            providerId: profile.sub
+            // password intentionally omitted for OAuth users
         });
 
+        user = (await newUser.save()).toObject();
         return user;
     }
 }

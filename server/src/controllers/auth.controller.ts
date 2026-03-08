@@ -68,32 +68,8 @@ export class AuthController {
         const tokens = await google.validateAuthorizationCode(code, codeVerifier);
 
         const googleUser = decodeIdToken(tokens.idToken()) as IGoogleUserInfo;
-        // const { sub, name, email, picture,email_verified } = googleUser;
 
 
-        // // Fetch user profile from Google's userinfo endpoint
-        // const userInfoResponse = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
-        //     headers: { Authorization: `Bearer ${tokens.accessToken()}` },
-        // });
-
-        // if (!userInfoResponse.ok) {
-        //     res.status(502).json({ success: false, message: "Failed to fetch user info from Google." });
-        //     return;
-        // }
-
-        // const googleUser = (await userInfoResponse.json()) as IGoogleUserInfo;
-
-        // if (!googleUser.email_verified) {
-        //     res.status(400).json({ success: false, message: "Google account email is not verified." });
-        //     return;
-        // }
-        // const googleUser: IGoogleUserInfo = {
-        //     sub: googleId,
-        //     name,
-        //     email,
-        //     picture,
-        //     email_verified
-        // };
         // Find or create user and link Auth record
         const user = await AuthService.findOrCreateUserFromGoogle(googleUser);
 

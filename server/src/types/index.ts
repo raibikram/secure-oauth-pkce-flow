@@ -7,15 +7,8 @@ export interface IUser extends Document {
     password?: string; // Optional — not set for OAuth users
     avatar?: string;   // Profile picture URL from OAuth provider
     role: "USER" | "ADMIN";
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-export interface IAuth extends Document {
-    _id: Types.ObjectId;
-    provider: "google" | "github" | "facebook";
-    providerId: string;
-    userId: Types.ObjectId;
+    provider?: "local" | "google" | "github" | "facebook";
+    providerId?: string;
     createdAt: Date;
     updatedAt: Date;
 }
